@@ -2,161 +2,144 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>إضافة منشور - Dash</title>
 
 <style>
-
 body{
     background:#000;
     color:white;
-    font-family:Arial, sans-serif;
+    font-family:Arial;
     text-align:center;
 }
 
 .box{
-
     margin:40px auto;
     width:90%;
     max-width:400px;
     background:#181818;
     padding:20px;
     border-radius:20px;
-
 }
 
-
 input, textarea{
-
     width:90%;
     padding:12px;
     margin:10px;
     border-radius:10px;
     border:none;
-
 }
-
-
-img{
-
-    max-width:90%;
-    border-radius:15px;
-    margin-top:15px;
-
-}
-
 
 button{
-
-    background:white;
-    color:black;
     padding:12px 25px;
-    border:none;
+    border:0;
     border-radius:20px;
     cursor:pointer;
-
 }
 
-
-#result{
-
-    margin-top:20px;
-
+img{
+    width:90%;
+    border-radius:15px;
 }
-
-
 </style>
 
 </head>
-
 
 <body>
 
 
 <div class="box">
 
-
 <h1>➕ منشور جديد</h1>
 
-
-<input 
-type="file" 
-id="image" 
-accept="image/*"
-onchange="preview()"
->
-
+<input type="file" id="image" accept="image/*">
 
 <img id="preview">
 
+<textarea id="text" placeholder="اكتب وصف المنشور"></textarea>
 
-<textarea 
-id="text" 
-placeholder="اكتب وصف المنشور">
-</textarea>
-
-
-<button onclick="publish()">
-نشر
-</button>
-
+<button onclick="publish()">نشر</button>
 
 <p id="result"></p>
-
 
 </div>
 
 
+<script type="module">
 
-<script>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import { 
+getFirestore,
+collection,
+addDoc
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
-function preview(){
+const firebaseConfig = {
 
-let file = document.getElementById("image").files[0];
+apiKey: "AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
-let img = document.getElementById("preview");
+authDomain: "dassh-e5b89.firebaseapp.com",
 
+projectId: "dassh-e5b89",
+
+storageBucket: "dassh-e5b89.firebasestorage.app",
+
+messagingSenderId: "360444967805",
+
+appId: "1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+image.onchange = function(){
+
+let file = image.files[0];
 
 if(file){
 
-img.src = URL.createObjectURL(file);
+preview.src = URL.createObjectURL(file);
 
 }
 
-}
+};
 
 
 
-function publish(){
+window.publish = async function(){
 
-let text = document.getElementById("text").value;
+let textValue = document.getElementById("text").value;
 
 
-if(text == ""){
+await addDoc(collection(db,"posts"),{
+
+text:textValue,
+
+username:"zayed",
+
+created:new Date()
+
+});
+
 
 document.getElementById("result").innerHTML =
-"⚠️ اكتب وصف المنشور";
-
-}
-
-else{
-
-document.getElementById("result").innerHTML =
-"✅ تم تجهيز المنشور";
-
-}
+"✅ تم حفظ المنشور في Dash";
 
 
-}
+};
 
 
 </script>
 
 
 </body>
-
 </html>
