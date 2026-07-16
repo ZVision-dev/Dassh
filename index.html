@@ -182,6 +182,7 @@ const auth=getAuth(app);
 let username="زائر";
 
 
+
 onAuthStateChanged(auth,(user)=>{
 
 if(user){
@@ -218,7 +219,14 @@ box.innerHTML += `
 
 <h3>
 
+
+<a href="user.html?user=${post.username}" 
+style="color:white;text-decoration:none;">
+
 👤 @${post.username}
+
+</a>
+
 
 
 <button class="follow" onclick="follow('${post.username}')">
@@ -271,13 +279,7 @@ ${post.image ? `<img src="${post.image}">`:""}
 loadComments(id);
 
 
-});
-
-
-
-
-
-async function loadComments(postId){
+});async function loadComments(postId){
 
 
 let comments=await getDocs(
@@ -400,7 +402,6 @@ location.reload();
 
 
 }
-
 
 
 
