@@ -64,6 +64,8 @@ text-decoration:none;
 
 <p>منصة مشاركة المحتوى</p>
 
+<p id="welcome">👋 مرحبًا</p>
+
 
 <a href="register.html">
 <button>👤 إنشاء حساب</button>
@@ -88,11 +90,11 @@ text-decoration:none;
 
 
 
-
 <script type="module">
 
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
 import {
@@ -100,8 +102,17 @@ getFirestore,
 collection,
 getDocs,
 doc,
-updateDoc
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+updateDoc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 
 
@@ -127,7 +138,45 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+const auth = getAuth(app);
 
+
+
+
+// عرض اسم المستخدم
+
+onAuthStateChanged(auth, async(user)=>{
+
+
+if(user){
+
+
+let userDoc = await getDoc(
+doc(db,"users",user.uid)
+);
+
+
+
+if(userDoc.exists()){
+
+
+document.getElementById("welcome").innerHTML =
+"👋 مرحبًا " + userDoc.data().username;
+
+
+}
+
+
+}
+
+
+
+});
+
+
+
+
+// عرض المنشورات
 
 const box = document.getElementById("posts");
 
@@ -139,27 +188,37 @@ const snapshot = await getDocs(collection(db,"posts"));
 snapshot.forEach((item)=>{
 
 
-let post = item.data();
+let post=item.data();
 
-let id = item.id;
+let id=item.id;
 
 
 
 box.innerHTML += `
 
+
 <div class="post">
+
 
 <h3>👤 @${post.username}</h3>
 
+
 ${post.image ? `<img src="${post.image}">` : ""}
+
 
 <p>${post.text}</p>
 
+
+
 <button onclick="likePost('${id}',${post.likes || 0},this)">
+
 ❤️ ${post.likes || 0}
+
 </button>
 
+
 </div>
+
 
 `;
 
@@ -174,20 +233,16 @@ ${post.image ? `<img src="${post.image}">` : ""}
 window.likePost = async function(id,likes,button){
 
 
-const postRef = doc(db,"posts",id);
+await updateDoc(
+doc(db,"posts",id),
+{
+likes:likes+1
+}
+);
 
 
-let newLikes = likes + 1;
 
-
-await updateDoc(postRef,{
-
-likes:newLikes
-
-});
-
-
-button.innerHTML="❤️ "+newLikes;
+button.innerHTML="❤️ "+(likes+1);
 
 button.onclick=null;
 
