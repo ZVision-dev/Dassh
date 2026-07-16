@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإشعارات - Dash</title>
+
+<style>
+
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.box{
+width:90%;
+max-width:400px;
+margin:30px auto;
+background:#181818;
+padding:20px;
+border-radius:20px;
+}
+
+.notice{
+background:#222;
+padding:15px;
+margin:10px;
+border-radius:15px;
+}
+
+button{
+background:#333;
+color:white;
+border:0;
+padding:10px;
+border-radius:20px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h1>🔔 الإشعارات</h1>
+
+
+<div id="notifications"></div>
+
+
+<br>
+
+<a href="index.html">
+<button>
+🏠 الرئيسية
+</button>
+</a>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+query,
+where
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+let username="";
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(user){
+
+
+let users=await getDocs(
+
+query(
+
+collection(db,"users"),
+
+where("email","==",user.email)
+
+)
+
+);
+
+
+
+users.forEach((u)=>{
+
+username=u.data().username;
+
+});
+
+
+
+loadNotifications();
+
+
+}
+
+
+});
+
+
+
+
+
+async function loadNotifications(){
+
+
+let box=document.getElementById("notifications");
+
+
+
+let data=await getDocs(
+
+query(
+
+collection(db,"notifications"),
+
+where("to","==",username)
+
+)
+
+);
+
+
+
+data.forEach((item)=>{
+
+
+let n=item.data();
+
+
+
+box.innerHTML += `
+
+<div class="notice">
+
+🔔 ${n.text}
+
+</div>
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
