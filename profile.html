@@ -26,6 +26,13 @@ padding:20px;
 border-radius:20px;
 }
 
+.profile-img{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+}
+
 .post{
 background:#222;
 padding:15px;
@@ -62,10 +69,10 @@ background:#900;
 <div class="box">
 
 
-<h1>👤 حسابي</h1>
+<img id="photo" class="profile-img" src="https://picsum.photos/200">
 
 
-<h2 id="name">...</h2>
+<h1 id="name">...</h1>
 
 <p id="email"></p>
 
@@ -122,149 +129,4 @@ apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
 authDomain:"dassh-e5b89.firebaseapp.com",
 
-projectId:"dassh-e5b89",
-
-storageBucket:"dassh-e5b89.firebasestorage.app",
-
-messagingSenderId:"360444967805",
-
-appId:"1:360444967805:web:fe10ef5a579424141caa14"
-
-};
-
-
-
-const app=initializeApp(firebaseConfig);
-
-const db=getFirestore(app);
-
-const auth=getAuth(app);
-
-
-
-const postsBox=document.getElementById("myPosts");
-
-
-
-onAuthStateChanged(auth,async(user)=>{
-
-
-if(user){
-
-
-document.getElementById("email").innerHTML=user.email;
-
-
-
-let userDoc=await getDoc(
-doc(db,"users",user.uid)
-);
-
-
-
-if(userDoc.exists()){
-
-
-let username=userDoc.data().username;
-
-
-document.getElementById("name").innerHTML =
-"👤 "+username;
-
-
-
-let posts=await getDocs(
-query(
-collection(db,"posts"),
-where("username","==",username)
-)
-);
-
-
-
-posts.forEach((item)=>{
-
-
-let post=item.data();
-
-
-
-postsBox.innerHTML += `
-
-
-<div class="post">
-
-
-${post.image ? `<img src="${post.image}">` : ""}
-
-
-<p>${post.text}</p>
-
-
-
-<button class="delete" onclick="deletePost('${item.id}')">
-
-🗑️ حذف
-
-</button>
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
-}
-
-
-}
-
-
-});
-
-
-
-
-
-window.deletePost=async function(id){
-
-
-await deleteDoc(
-doc(db,"posts",id)
-);
-
-
-location.reload();
-
-
-}
-
-
-
-
-
-window.logout=function(){
-
-
-signOut(auth);
-
-
-location.href="login.html";
-
-
-}
-
-
-
-</script>
-
-
-</body>
-
-</html>
+projectId:"
