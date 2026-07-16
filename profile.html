@@ -64,6 +64,7 @@ background:#900;
 
 <h1>👤 حسابي</h1>
 
+
 <h2 id="name">...</h2>
 
 <p id="email"></p>
@@ -74,12 +75,15 @@ background:#900;
 </button>
 
 
+
 <h2>منشوراتي</h2>
+
 
 <div id="myPosts"></div>
 
 
 </div>
+
 
 
 
@@ -137,7 +141,8 @@ const db=getFirestore(app);
 const auth=getAuth(app);
 
 
-const box=document.getElementById("myPosts");
+
+const postsBox=document.getElementById("myPosts");
 
 
 
@@ -150,17 +155,20 @@ if(user){
 document.getElementById("email").innerHTML=user.email;
 
 
+
 let userDoc=await getDoc(
 doc(db,"users",user.uid)
 );
 
 
 
+if(userDoc.exists()){
+
+
 let username=userDoc.data().username;
 
 
-
-document.getElementById("name").innerHTML=
+document.getElementById("name").innerHTML =
 "👤 "+username;
 
 
@@ -180,20 +188,29 @@ posts.forEach((item)=>{
 let post=item.data();
 
 
-box.innerHTML += `
+
+postsBox.innerHTML += `
+
 
 <div class="post">
 
-${post.image ? `<img src="${post.image}">`:""}
+
+${post.image ? `<img src="${post.image}">` : ""}
+
 
 <p>${post.text}</p>
 
+
+
 <button class="delete" onclick="deletePost('${item.id}')">
+
 🗑️ حذف
+
 </button>
 
 
 </div>
+
 
 `;
 
@@ -201,6 +218,9 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 });
 
+
+
+}
 
 
 }
@@ -228,11 +248,15 @@ location.reload();
 
 
 
+
 window.logout=function(){
+
 
 signOut(auth);
 
+
 location.href="login.html";
+
 
 }
 
