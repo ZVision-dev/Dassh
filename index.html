@@ -70,6 +70,11 @@ text-decoration:none;
 </a>
 
 
+<a href="login.html">
+<button>🔐 تسجيل الدخول</button>
+</a>
+
+
 <a href="upload.html">
 <button>➕ إضافة منشور</button>
 </a>
@@ -142,30 +147,19 @@ let id = item.id;
 
 box.innerHTML += `
 
-
 <div class="post">
-
 
 <h3>👤 @${post.username}</h3>
 
-
 ${post.image ? `<img src="${post.image}">` : ""}
-
 
 <p>${post.text}</p>
 
-
-
 <button onclick="likePost('${id}',${post.likes || 0},this)">
-
 ❤️ ${post.likes || 0}
-
 </button>
 
-
-
 </div>
-
 
 `;
 
@@ -193,9 +187,9 @@ likes:newLikes
 });
 
 
-button.innerHTML = "❤️ " + newLikes;
+button.innerHTML="❤️ "+newLikes;
 
-button.onclick = null;
+button.onclick=null;
 
 
 }
