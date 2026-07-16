@@ -64,14 +64,23 @@ text-decoration:none;
 
 <p>منصة مشاركة المحتوى</p>
 
+
+<a href="register.html">
+<button>👤 إنشاء حساب</button>
+</a>
+
+
 <a href="upload.html">
 <button>➕ إضافة منشور</button>
 </a>
 
+
 </header>
 
 
+
 <div id="posts"></div>
+
 
 
 
@@ -146,11 +155,13 @@ ${post.image ? `<img src="${post.image}">` : ""}
 <p>${post.text}</p>
 
 
+
 <button onclick="likePost('${id}',${post.likes || 0},this)">
 
 ❤️ ${post.likes || 0}
 
 </button>
+
 
 
 </div>
