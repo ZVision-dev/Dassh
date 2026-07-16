@@ -77,6 +77,11 @@ text-decoration:none;
 </a>
 
 
+<a href="profile.html">
+<button>📱 الحساب</button>
+</a>
+
+
 <a href="upload.html">
 <button>➕ إضافة منشور</button>
 </a>
@@ -93,7 +98,7 @@ text-decoration:none;
 <script type="module">
 
 
-import { initializeApp } 
+import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
@@ -118,70 +123,58 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
-authDomain: "dassh-e5b89.firebaseapp.com",
+authDomain:"dassh-e5b89.firebaseapp.com",
 
-projectId: "dassh-e5b89",
+projectId:"dassh-e5b89",
 
-storageBucket: "dassh-e5b89.firebasestorage.app",
+storageBucket:"dassh-e5b89.firebasestorage.app",
 
-messagingSenderId: "360444967805",
+messagingSenderId:"360444967805",
 
-appId: "1:360444967805:web:fe10ef5a579424141caa14"
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
 
 };
 
 
 
-const app = initializeApp(firebaseConfig);
+const app=initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const db=getFirestore(app);
 
-const auth = getAuth(app);
-
-
+const auth=getAuth(app);
 
 
-// عرض اسم المستخدم
 
-onAuthStateChanged(auth, async(user)=>{
+onAuthStateChanged(auth,async(user)=>{
 
 
 if(user){
 
-
-let userDoc = await getDoc(
+let userDoc=await getDoc(
 doc(db,"users",user.uid)
 );
 
 
-
 if(userDoc.exists()){
 
-
 document.getElementById("welcome").innerHTML =
-"👋 مرحبًا " + userDoc.data().username;
-
-
-}
-
+"👋 مرحبًا "+userDoc.data().username;
 
 }
 
-
+}
 
 });
 
 
 
 
-// عرض المنشورات
-
-const box = document.getElementById("posts");
+const box=document.getElementById("posts");
 
 
-const snapshot = await getDocs(collection(db,"posts"));
+const snapshot=await getDocs(collection(db,"posts"));
 
 
 
@@ -198,7 +191,6 @@ box.innerHTML += `
 
 
 <div class="post">
-
 
 <h3>👤 @${post.username}</h3>
 
@@ -230,7 +222,7 @@ ${post.image ? `<img src="${post.image}">` : ""}
 
 
 
-window.likePost = async function(id,likes,button){
+window.likePost=async function(id,likes,button){
 
 
 await updateDoc(
@@ -239,7 +231,6 @@ doc(db,"posts",id),
 likes:likes+1
 }
 );
-
 
 
 button.innerHTML="❤️ "+(likes+1);
