@@ -11,7 +11,6 @@
 <style>
 
 body{
-margin:0;
 background:#000;
 color:white;
 font-family:Arial;
@@ -37,17 +36,27 @@ width:100%;
 border-radius:15px;
 }
 
+input{
+width:90%;
+padding:10px;
+border-radius:10px;
+border:0;
+}
+
 button{
 background:#333;
 color:white;
-border:none;
-padding:12px;
+border:0;
+padding:10px;
 border-radius:20px;
 margin:5px;
 }
 
-a{
-text-decoration:none;
+.comment{
+background:#333;
+padding:8px;
+border-radius:10px;
+margin:5px;
 }
 
 </style>
@@ -62,30 +71,15 @@ text-decoration:none;
 
 <h1>🚀 Dash</h1>
 
-<p>منصة مشاركة المحتوى</p>
-
 <p id="welcome">👋 مرحبًا</p>
 
+<a href="register.html"><button>👤 حساب</button></a>
 
-<a href="register.html">
-<button>👤 إنشاء حساب</button>
-</a>
+<a href="login.html"><button>🔐 دخول</button></a>
 
+<a href="upload.html"><button>➕ نشر</button></a>
 
-<a href="login.html">
-<button>🔐 تسجيل الدخول</button>
-</a>
-
-
-<a href="profile.html">
-<button>📱 الحساب</button>
-</a>
-
-
-<a href="upload.html">
-<button>➕ إضافة منشور</button>
-</a>
-
+<a href="profile.html"><button>📱 ملفي</button></a>
 
 </header>
 
@@ -106,9 +100,11 @@ import {
 getFirestore,
 collection,
 getDocs,
+addDoc,
 doc,
 updateDoc,
-getDoc
+query,
+where
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -121,7 +117,7 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 
 
-const firebaseConfig = {
+const firebaseConfig={
 
 apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
@@ -147,22 +143,15 @@ const auth=getAuth(app);
 
 
 
-onAuthStateChanged(auth,async(user)=>{
+let username="زائر";
 
+
+
+onAuthStateChanged(auth,(user)=>{
 
 if(user){
 
-let userDoc=await getDoc(
-doc(db,"users",user.uid)
-);
-
-
-if(userDoc.exists()){
-
-document.getElementById("welcome").innerHTML =
-"👋 مرحبًا "+userDoc.data().username;
-
-}
+username=user.email;
 
 }
 
@@ -172,6 +161,7 @@ document.getElementById("welcome").innerHTML =
 
 
 const box=document.getElementById("posts");
+
 
 
 const snapshot=await getDocs(collection(db,"posts"));
@@ -187,15 +177,16 @@ let id=item.id;
 
 
 
-box.innerHTML += `
+box.innerHTML+=`
 
 
 <div class="post">
 
+
 <h3>👤 @${post.username}</h3>
 
 
-${post.image ? `<img src="${post.image}">` : ""}
+${post.image ? `<img src="${post.image}">`:""}
 
 
 <p>${post.text}</p>
@@ -203,10 +194,20 @@ ${post.image ? `<img src="${post.image}">` : ""}
 
 
 <button onclick="likePost('${id}',${post.likes || 0},this)">
-
 ❤️ ${post.likes || 0}
-
 </button>
+
+
+
+<input id="c${id}" placeholder="اكتب تعليق">
+
+
+<button onclick="addComment('${id}')">
+💬 تعليق
+</button>
+
+
+<div id="comments${id}"></div>
 
 
 </div>
@@ -222,8 +223,7 @@ ${post.image ? `<img src="${post.image}">` : ""}
 
 
 
-window.likePost=async function(id,likes,button){
-
+window.likePost=async function(id,likes,btn){
 
 await updateDoc(
 doc(db,"posts",id),
@@ -232,10 +232,34 @@ likes:likes+1
 }
 );
 
+btn.innerHTML="❤️ "+(likes+1);
 
-button.innerHTML="❤️ "+(likes+1);
+}
 
-button.onclick=null;
+
+
+
+window.addComment=async function(id){
+
+
+let text=document.getElementById("c"+id).value;
+
+
+await addDoc(collection(db,"comments"),{
+
+post:id,
+
+user:username,
+
+text:text
+
+});
+
+
+alert("✅ تم إضافة التعليق");
+
+
+location.reload();
 
 
 }
