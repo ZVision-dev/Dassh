@@ -75,15 +75,33 @@ background:#006600;
 
 <h1>🚀 Dash</h1>
 
-<p id="welcome">👋 مرحبًا</p>
+<p>👋 مرحبًا بك</p>
 
-<a href="register.html"><button>👤 حساب</button></a>
 
-<a href="login.html"><button>🔐 دخول</button></a>
+<a href="register.html">
+<button>👤 حساب</button>
+</a>
 
-<a href="upload.html"><button>➕ نشر</button></a>
 
-<a href="profile.html"><button>📱 ملفي</button></a>
+<a href="login.html">
+<button>🔐 دخول</button>
+</a>
+
+
+<a href="upload.html">
+<button>➕ نشر</button>
+</a>
+
+
+<a href="profile.html">
+<button>📱 ملفي</button>
+</a>
+
+
+<a href="search.html">
+<button>🔍 بحث</button>
+</a>
+
 
 </header>
 
@@ -95,6 +113,7 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
 import {
+
 getFirestore,
 collection,
 getDocs,
@@ -103,15 +122,21 @@ doc,
 updateDoc,
 query,
 where
+
 }
+
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 import {
+
 getAuth,
 onAuthStateChanged
+
 }
+
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
 
 
 const firebaseConfig={
@@ -194,7 +219,7 @@ box.innerHTML += `
 
 
 
-${post.image ? `<img src="${post.image}">` : ""}
+${post.image ? `<img src="${post.image}">`:""}
 
 
 <p>${post.text}</p>
@@ -280,7 +305,6 @@ ${c.text}
 </div>
 
 `;
-
 
 });
 
@@ -368,7 +392,6 @@ following:user
 }
 
 );
-
 
 
 alert("✅ تمت المتابعة");
