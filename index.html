@@ -14,6 +14,7 @@ body{
 background:#000;
 color:white;
 font-family:Arial;
+padding-bottom:80px;
 }
 
 header{
@@ -63,6 +64,27 @@ margin:5px;
 background:#006600;
 }
 
+
+.nav{
+
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#111;
+text-align:center;
+padding:8px;
+
+}
+
+
+.nav button{
+
+font-size:18px;
+
+}
+
+
 </style>
 
 </head>
@@ -77,36 +99,36 @@ background:#006600;
 
 <p>👋 مرحبًا بك</p>
 
-
-<a href="register.html">
-<button>👤 حساب</button>
-</a>
-
-
-<a href="login.html">
-<button>🔐 دخول</button>
-</a>
-
-
-<a href="upload.html">
-<button>➕ نشر</button>
-</a>
-
-
-<a href="profile.html">
-<button>📱 ملفي</button>
-</a>
-
-
-<a href="search.html">
-<button>🔍 بحث</button>
-</a>
-
-
 </header>
 
 
-<div id="posts"></div><script type="module">
+<div id="posts"></div><div class="nav">
+
+<a href="index.html">
+<button>🏠</button>
+</a>
+
+<a href="search.html">
+<button>🔍</button>
+</a>
+
+<a href="upload.html">
+<button>➕</button>
+</a>
+
+<a href="notifications.html">
+<button>🔔</button>
+</a>
+
+<a href="profile.html">
+<button>📱</button>
+</a>
+
+</div>
+
+
+
+<script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -166,7 +188,6 @@ const auth=getAuth(app);
 
 
 let username="زائر";
-
 
 
 onAuthStateChanged(auth,(user)=>{
@@ -256,7 +277,6 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 
 loadComments(id);
-
 
 
 });
@@ -349,7 +369,6 @@ let text=document.getElementById("c"+id).value;
 if(text=="") return;
 
 
-
 await addDoc(
 
 collection(db,"comments"),
@@ -365,7 +384,6 @@ text:text
 }
 
 );
-
 
 
 location.reload();
