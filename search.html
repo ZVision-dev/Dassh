@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>بحث - Dash</title>
+
+<style>
+
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.box{
+width:90%;
+max-width:400px;
+margin:30px auto;
+background:#181818;
+padding:20px;
+border-radius:20px;
+}
+
+input{
+width:90%;
+padding:12px;
+border-radius:10px;
+border:0;
+}
+
+.user{
+background:#222;
+padding:15px;
+margin:15px;
+border-radius:15px;
+}
+
+button{
+background:#333;
+color:white;
+border:0;
+padding:10px;
+border-radius:20px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h1>🔍 البحث</h1>
+
+
+<input id="search" placeholder="اسم المستخدم">
+
+
+<button onclick="searchUser()">
+بحث
+</button>
+
+
+<div id="result"></div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+
+getFirestore,
+
+collection,
+
+getDocs,
+
+query,
+
+where,
+
+addDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+import {
+
+getAuth,
+
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+let me="زائر";
+
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+me=user.email;
+
+}
+
+});
+
+
+
+
+window.searchUser=async function(){
+
+
+let name=document.getElementById("search").value;
+
+
+let users=await getDocs(
+
+query(
+
+collection(db,"users"),
+
+where("username","==",name)
+
+)
+
+);
+
+
+
+let box=document.getElementById("result");
+
+
+box.innerHTML="";
+
+
+
+users.forEach((u)=>{
+
+
+let data=u.data();
+
+
+
+box.innerHTML+=`
+
+<div class="user">
+
+<h3>👤 ${data.username}</h3>
+
+
+<img width="80" height="80" style="border-radius:50%" 
+src="${data.photo || 'https://picsum.photos/200'}">
+
+
+<br>
+
+
+<button onclick="follow('${data.username}')">
+
+➕ متابعة
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+
+window.follow=async function(user){
+
+
+await addDoc(
+
+collection(db,"follows"),
+
+{
+
+follower:me,
+
+following:user
+
+}
+
+);
+
+
+alert("✅ تمت المتابعة");
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
