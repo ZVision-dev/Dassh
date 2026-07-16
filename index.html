@@ -59,6 +59,10 @@ border-radius:10px;
 margin:5px;
 }
 
+.follow{
+background:#006600;
+}
+
 </style>
 
 </head>
@@ -73,7 +77,6 @@ margin:5px;
 
 <p id="welcome">👋 مرحبًا</p>
 
-
 <a href="register.html"><button>👤 حساب</button></a>
 
 <a href="login.html"><button>🔐 دخول</button></a>
@@ -85,13 +88,7 @@ margin:5px;
 </header>
 
 
-
-<div id="posts"></div>
-
-
-
-<script type="module">
-
+<div id="posts"></div><script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -115,7 +112,6 @@ getAuth,
 onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
 
 
 const firebaseConfig={
@@ -160,7 +156,6 @@ username=user.email;
 
 
 
-
 const box=document.getElementById("posts");
 
 
@@ -177,16 +172,29 @@ let id=item.id;
 
 
 
-box.innerHTML+=`
+box.innerHTML += `
 
 
 <div class="post">
 
 
-<h3>👤 @${post.username}</h3>
+<h3>
+
+👤 @${post.username}
 
 
-${post.image ? `<img src="${post.image}">`:""}
+<button class="follow" onclick="follow('${post.username}')">
+
+➕ متابعة
+
+</button>
+
+
+</h3>
+
+
+
+${post.image ? `<img src="${post.image}">` : ""}
 
 
 <p>${post.text}</p>
@@ -194,7 +202,9 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 
 <button onclick="likePost('${id}',${post.likes || 0},this)">
+
 ❤️ ${post.likes || 0}
+
 </button>
 
 
@@ -203,15 +213,14 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 
 <button onclick="addComment('${id}')">
+
 💬 تعليق
+
 </button>
 
 
 
-<div id="comments${id}">
-
-</div>
-
+<div id="comments${id}"></div>
 
 
 </div>
@@ -248,9 +257,7 @@ where("post","==",postId)
 
 
 
-let area=document.getElementById(
-"comments"+postId
-);
+let area=document.getElementById("comments"+postId);
 
 
 
@@ -258,7 +265,6 @@ comments.forEach((item)=>{
 
 
 let c=item.data();
-
 
 
 area.innerHTML += `
@@ -339,6 +345,33 @@ text:text
 
 
 location.reload();
+
+
+}
+
+
+
+
+window.follow=async function(user){
+
+
+await addDoc(
+
+collection(db,"follows"),
+
+{
+
+follower:username,
+
+following:user
+
+}
+
+);
+
+
+
+alert("✅ تمت المتابعة");
 
 
 }
