@@ -64,9 +64,7 @@ margin:5px;
 background:#006600;
 }
 
-
 .nav{
-
 position:fixed;
 bottom:0;
 left:0;
@@ -74,16 +72,11 @@ width:100%;
 background:#111;
 text-align:center;
 padding:8px;
-
 }
-
 
 .nav button{
-
 font-size:18px;
-
 }
-
 
 </style>
 
@@ -102,7 +95,10 @@ font-size:18px;
 </header>
 
 
-<div id="posts"></div><div class="nav">
+<div id="posts"></div>
+
+
+<div class="nav">
 
 <a href="index.html">
 <button>🏠</button>
@@ -124,11 +120,7 @@ font-size:18px;
 <button>📱</button>
 </a>
 
-</div>
-
-
-
-<script type="module">
+</div><script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -258,7 +250,7 @@ ${post.image ? `<img src="${post.image}">`:""}
 <input id="c${id}" placeholder="اكتب تعليق">
 
 
-<button onclick="addComment('${id}')">
+<button onclick="addComment('${id}','${post.username}')">
 
 💬 تعليق
 
@@ -360,13 +352,14 @@ btn.innerHTML="❤️ "+(likes+1);
 
 
 
-window.addComment=async function(id){
+window.addComment=async function(id,owner){
 
 
 let text=document.getElementById("c"+id).value;
 
 
 if(text=="") return;
+
 
 
 await addDoc(
@@ -386,10 +379,28 @@ text:text
 );
 
 
+
+await addDoc(
+
+collection(db,"notifications"),
+
+{
+
+to:owner,
+
+text:"💬 "+username+" علق على منشورك"
+
+}
+
+);
+
+
+
 location.reload();
 
 
 }
+
 
 
 
@@ -410,6 +421,23 @@ following:user
 }
 
 );
+
+
+
+await addDoc(
+
+collection(db,"notifications"),
+
+{
+
+to:user,
+
+text:"👥 "+username+" بدأ بمتابعتك"
+
+}
+
+);
+
 
 
 alert("✅ تمت المتابعة");
