@@ -129,4 +129,158 @@ apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
 authDomain:"dassh-e5b89.firebaseapp.com",
 
-projectId:"
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+const postsBox=document.getElementById("myPosts");
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(user){
+
+
+document.getElementById("email").innerHTML=user.email;
+
+
+
+let userDoc=await getDoc(
+doc(db,"users",user.uid)
+);
+
+
+
+if(userDoc.exists()){
+
+
+let data=userDoc.data();
+
+
+
+document.getElementById("name").innerHTML=
+"👤 "+data.username;
+
+
+
+if(data.photo){
+
+document.getElementById("photo").src=data.photo;
+
+}
+
+
+
+let posts=await getDocs(
+query(
+collection(db,"posts"),
+where("username","==",data.username)
+)
+);
+
+
+
+posts.forEach((item)=>{
+
+
+let post=item.data();
+
+
+
+postsBox.innerHTML += `
+
+
+<div class="post">
+
+
+${post.image ? `<img src="${post.image}">` : ""}
+
+
+<p>${post.text}</p>
+
+
+
+<button class="delete" onclick="deletePost('${item.id}')">
+
+🗑️ حذف
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+}
+
+
+});
+
+
+
+
+
+window.deletePost=async function(id){
+
+
+await deleteDoc(
+doc(db,"posts",id)
+);
+
+
+location.reload();
+
+
+}
+
+
+
+
+
+window.logout=function(){
+
+
+signOut(auth);
+
+
+location.href="login.html";
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
