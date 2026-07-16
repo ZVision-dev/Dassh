@@ -35,11 +35,11 @@ border:none;
 }
 
 button{
-padding:12px 25px;
-border:0;
-border-radius:20px;
 background:#333;
 color:white;
+border:none;
+padding:12px 25px;
+border-radius:20px;
 }
 
 </style>
@@ -64,6 +64,9 @@ color:white;
 <input id="password" type="password" placeholder="كلمة المرور">
 
 
+<input id="photo" placeholder="رابط الصورة الشخصية">
+
+
 <button onclick="register()">
 إنشاء حساب
 </button>
@@ -79,36 +82,39 @@ color:white;
 <script type="module">
 
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
 import {
 getAuth,
 createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 
 import {
 getFirestore,
 doc,
 setDoc
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
 
-authDomain: "dassh-e5b89.firebaseapp.com",
+authDomain:"dassh-e5b89.firebaseapp.com",
 
-projectId: "dassh-e5b89",
+projectId:"dassh-e5b89",
 
-storageBucket: "dassh-e5b89.firebasestorage.app",
+storageBucket:"dassh-e5b89.firebasestorage.app",
 
-messagingSenderId: "360444967805",
+messagingSenderId:"360444967805",
 
-appId: "1:360444967805:web:fe10ef5a579424141caa14"
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
 
 };
 
@@ -123,22 +129,23 @@ const db = getFirestore(app);
 
 
 
-
 window.register = async function(){
 
 
-let name = document.getElementById("name").value;
+let name=document.getElementById("name").value;
 
-let email = document.getElementById("email").value;
+let email=document.getElementById("email").value;
 
-let password = document.getElementById("password").value;
+let password=document.getElementById("password").value;
+
+let photo=document.getElementById("photo").value;
 
 
 
 try{
 
 
-let user = await createUserWithEmailAndPassword(
+let user=await createUserWithEmailAndPassword(
 auth,
 email,
 password
@@ -146,18 +153,24 @@ password
 
 
 
-await setDoc(doc(db,"users",user.user.uid),{
+await setDoc(
+doc(db,"users",user.user.uid),
+{
 
 username:name,
 
-email:email
+email:email,
 
-});
+photo:photo
+
+}
+
+);
 
 
 
-document.getElementById("result").innerHTML =
-"✅ تم إنشاء الحساب وحفظ الاسم";
+document.getElementById("result").innerHTML=
+"✅ تم إنشاء الحساب وحفظ الصورة";
 
 
 }
@@ -165,10 +178,13 @@ document.getElementById("result").innerHTML =
 
 catch(error){
 
-document.getElementById("result").innerHTML =
+
+document.getElementById("result").innerHTML=
 "❌ "+error.message;
 
+
 }
+
 
 
 }
