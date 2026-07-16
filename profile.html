@@ -33,6 +33,14 @@ border-radius:50%;
 object-fit:cover;
 }
 
+input{
+width:90%;
+padding:10px;
+margin:8px;
+border-radius:10px;
+border:0;
+}
+
 .post{
 background:#222;
 padding:15px;
@@ -77,6 +85,19 @@ background:#900;
 <p id="email"></p>
 
 
+<input id="newName" placeholder="الاسم الجديد">
+
+<input id="newPhoto" placeholder="رابط الصورة الجديدة">
+
+
+<button onclick="updateProfile()">
+✏️ حفظ التعديل
+</button>
+
+
+<br>
+
+
 <button onclick="logout()">
 🚪 تسجيل الخروج
 </button>
@@ -105,6 +126,7 @@ import {
 getFirestore,
 doc,
 getDoc,
+updateDoc,
 collection,
 getDocs,
 query,
@@ -148,6 +170,11 @@ const db=getFirestore(app);
 const auth=getAuth(app);
 
 
+let uid;
+
+let username;
+
+
 
 const postsBox=document.getElementById("myPosts");
 
@@ -159,14 +186,15 @@ onAuthStateChanged(auth,async(user)=>{
 if(user){
 
 
+uid=user.uid;
+
+
 document.getElementById("email").innerHTML=user.email;
 
 
-
 let userDoc=await getDoc(
-doc(db,"users",user.uid)
+doc(db,"users",uid)
 );
-
 
 
 if(userDoc.exists()){
@@ -175,24 +203,22 @@ if(userDoc.exists()){
 let data=userDoc.data();
 
 
+username=data.username;
+
 
 document.getElementById("name").innerHTML=
 "👤 "+data.username;
 
 
-
-if(data.photo){
-
-document.getElementById("photo").src=data.photo;
-
-}
+document.getElementById("photo").src=
+data.photo || "https://picsum.photos/200";
 
 
 
 let posts=await getDocs(
 query(
 collection(db,"posts"),
-where("username","==",data.username)
+where("username","==",username)
 )
 );
 
@@ -204,36 +230,25 @@ posts.forEach((item)=>{
 let post=item.data();
 
 
-
 postsBox.innerHTML += `
-
 
 <div class="post">
 
-
-${post.image ? `<img src="${post.image}">` : ""}
-
+${post.image ? `<img src="${post.image}">`:""}
 
 <p>${post.text}</p>
 
 
-
 <button class="delete" onclick="deletePost('${item.id}')">
-
 🗑️ حذف
-
 </button>
 
 
 </div>
 
-
 `;
 
-
-
 });
-
 
 
 }
@@ -244,6 +259,40 @@ ${post.image ? `<img src="${post.image}">` : ""}
 
 });
 
+
+
+
+
+window.updateProfile=async function(){
+
+
+let name=document.getElementById("newName").value;
+
+let photo=document.getElementById("newPhoto").value;
+
+
+
+await updateDoc(
+doc(db,"users",uid),
+{
+
+username:name || username,
+
+photo:photo
+
+}
+
+);
+
+
+
+alert("✅ تم تحديث الحساب");
+
+
+location.reload();
+
+
+}
 
 
 
@@ -263,16 +312,11 @@ location.reload();
 
 
 
-
-
 window.logout=function(){
-
 
 signOut(auth);
 
-
 location.href="login.html";
-
 
 }
 
