@@ -288,3 +288,154 @@ let post=item.data();
 postsBox.innerHTML += `
 
 <div class="post">
+
+${post.image ? `<img src="${post.image}">`:""}
+
+<p>${post.text}</p>
+
+
+<button class="delete" onclick="deletePost('${item.id}')">
+
+🗑️ حذف
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+await loadStats();
+
+
+}
+
+
+}
+
+
+});
+
+
+
+
+
+async function loadStats(){
+
+
+let followers=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("following","==",username)
+
+)
+
+);
+
+
+
+let following=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("follower","==",username)
+
+)
+
+);
+
+
+
+document.getElementById("followers").innerHTML=
+followers.size;
+
+
+document.getElementById("following").innerHTML=
+following.size;
+
+
+}
+
+
+
+
+
+window.updateProfile=async function(){
+
+
+let name=document.getElementById("newName").value;
+
+let photo=document.getElementById("newPhoto").value;
+
+
+
+await updateDoc(
+
+doc(db,"users",uid),
+
+{
+
+username:name || username,
+
+photo:photo
+
+}
+
+);
+
+
+
+alert("✅ تم التحديث");
+
+location.reload();
+
+
+}
+
+
+
+
+
+window.deletePost=async function(id){
+
+
+await deleteDoc(
+
+doc(db,"posts",id)
+
+);
+
+
+location.reload();
+
+
+}
+
+
+
+
+
+window.logout=function(){
+
+signOut(auth);
+
+location.href="login.html";
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
