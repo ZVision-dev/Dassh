@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الرسائل - Dash</title>
+
+<style>
+
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.box{
+width:90%;
+max-width:400px;
+margin:30px auto;
+background:#181818;
+padding:20px;
+border-radius:20px;
+}
+
+input{
+width:90%;
+padding:12px;
+border-radius:10px;
+border:0;
+margin:10px;
+}
+
+button{
+background:#333;
+color:white;
+border:0;
+padding:10px 20px;
+border-radius:20px;
+}
+
+.msg{
+background:#222;
+padding:10px;
+border-radius:15px;
+margin:10px;
+text-align:right;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h1>💬 الرسائل</h1>
+
+
+<input id="to" placeholder="اسم المستخدم">
+
+
+<input id="text" placeholder="اكتب رسالة">
+
+
+<button onclick="sendMessage()">
+إرسال
+</button>
+
+
+<h2>المحادثات</h2>
+
+
+<div id="messages"></div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+addDoc,
+getDocs,
+query,
+where
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+let me="زائر";
+
+
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+me=user.email;
+
+loadMessages();
+
+}
+
+});
+
+
+
+
+window.sendMessage=async function(){
+
+
+let to=document.getElementById("to").value;
+
+let text=document.getElementById("text").value;
+
+
+if(!to || !text) return;
+
+
+
+await addDoc(
+
+collection(db,"messages"),
+
+{
+
+from:me,
+
+to:to,
+
+text:text,
+
+time:new Date()
+
+}
+
+);
+
+
+
+alert("✅ تم إرسال الرسالة");
+
+
+}
+
+
+
+
+async function loadMessages(){
+
+
+let box=document.getElementById("messages");
+
+
+let data=await getDocs(
+
+query(
+
+collection(db,"messages"),
+
+where("to","==",me)
+
+)
+
+);
+
+
+
+data.forEach((m)=>{
+
+
+let msg=m.data();
+
+
+box.innerHTML += `
+
+<div class="msg">
+
+👤 ${msg.from}
+
+<br>
+
+${msg.text}
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
