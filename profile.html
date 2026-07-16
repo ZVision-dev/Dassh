@@ -6,33 +6,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>حساب Dash</title>
+<title>الملف الشخصي - Dash</title>
 
 <style>
 
 body{
-    background:#000;
-    color:white;
-    font-family:Arial;
-    text-align:center;
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
 }
 
-.profile{
-    margin-top:50px;
+.box{
+width:90%;
+max-width:400px;
+margin:40px auto;
+background:#181818;
+padding:20px;
+border-radius:20px;
 }
 
-img{
-    width:120px;
-    height:120px;
-    border-radius:50%;
+.post{
+background:#222;
+padding:15px;
+margin:15px;
+border-radius:15px;
+}
+
+.post img{
+width:100%;
+border-radius:15px;
 }
 
 button{
-    padding:12px 25px;
-    border:none;
-    border-radius:20px;
-    background:white;
-    cursor:pointer;
+background:#333;
+color:white;
+border:0;
+padding:12px;
+border-radius:20px;
 }
 
 </style>
@@ -43,19 +54,163 @@ button{
 <body>
 
 
-<div class="profile">
+<div class="box">
 
-<img src="videos/IMG_20260716_171141_984.jpg">
+<h1>👤 حسابي</h1>
 
-<h1>@zayed</h1>
+<h2 id="name">...</h2>
 
-<p>مستخدم جديد في Dash 🚀</p>
+<p id="email"></p>
 
-<button>
-متابعة
+<button onclick="logout()">
+🚪 تسجيل الخروج
 </button>
 
+
+<h2>منشوراتي</h2>
+
+<div id="myPosts"></div>
+
+
 </div>
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+getFirestore,
+doc,
+getDoc,
+collection,
+getDocs,
+query,
+where
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+const postsBox=document.getElementById("myPosts");
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(user){
+
+
+document.getElementById("email").innerHTML=user.email;
+
+
+
+let userData=await getDoc(
+doc(db,"users",user.uid)
+);
+
+
+
+if(userData.exists()){
+
+document.getElementById("name").innerHTML =
+"👤 "+userData.data().username;
+
+}
+
+
+
+let posts=await getDocs(
+query(
+collection(db,"posts"),
+where("username","==",userData.data().username)
+)
+);
+
+
+
+posts.forEach((item)=>{
+
+
+let post=item.data();
+
+
+postsBox.innerHTML += `
+
+<div class="post">
+
+${post.image ? `<img src="${post.image}">` : ""}
+
+<p>${post.text}</p>
+
+</div>
+
+`;
+
+
+});
+
+
+
+}
+
+
+});
+
+
+
+
+
+window.logout=function(){
+
+signOut(auth);
+
+window.location.href="login.html";
+
+}
+
+
+
+</script>
 
 
 </body>
