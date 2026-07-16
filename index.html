@@ -32,6 +32,11 @@ padding:15px;
 border-radius:20px;
 }
 
+.post img{
+width:100%;
+border-radius:15px;
+}
+
 button{
 background:#333;
 color:white;
@@ -39,6 +44,10 @@ border:none;
 padding:12px;
 border-radius:20px;
 margin:5px;
+}
+
+a{
+text-decoration:none;
 }
 
 </style>
@@ -67,6 +76,7 @@ margin:5px;
 
 
 <script type="module">
+
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
@@ -104,6 +114,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
+
 const box = document.getElementById("posts");
 
 
@@ -119,6 +130,7 @@ let post = item.data();
 let id = item.id;
 
 
+
 box.innerHTML += `
 
 
@@ -128,11 +140,13 @@ box.innerHTML += `
 <h3>👤 @${post.username}</h3>
 
 
+${post.image ? `<img src="${post.image}">` : ""}
+
+
 <p>${post.text}</p>
 
 
-
-<button id="like-${id}" onclick="likePost('${id}',${post.likes || 0},this)">
+<button onclick="likePost('${id}',${post.likes || 0},this)">
 
 ❤️ ${post.likes || 0}
 
@@ -168,9 +182,7 @@ likes:newLikes
 });
 
 
-
 button.innerHTML = "❤️ " + newLikes;
-
 
 button.onclick = null;
 
