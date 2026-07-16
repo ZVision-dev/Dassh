@@ -68,7 +68,6 @@ margin:5px;
 
 <script type="module">
 
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 
@@ -105,7 +104,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-
 const box = document.getElementById("posts");
 
 
@@ -133,7 +131,8 @@ box.innerHTML += `
 <p>${post.text}</p>
 
 
-<button onclick="likePost('${id}',${post.likes || 0})">
+
+<button id="like-${id}" onclick="likePost('${id}',${post.likes || 0},this)">
 
 ❤️ ${post.likes || 0}
 
@@ -146,25 +145,34 @@ box.innerHTML += `
 `;
 
 
+
 });
 
 
 
 
-window.likePost = async function(id,likes){
+
+window.likePost = async function(id,likes,button){
 
 
 const postRef = doc(db,"posts",id);
 
 
+let newLikes = likes + 1;
+
+
 await updateDoc(postRef,{
 
-likes: likes + 1
+likes:newLikes
 
 });
 
 
-location.reload();
+
+button.innerHTML = "❤️ " + newLikes;
+
+
+button.onclick = null;
 
 
 }
