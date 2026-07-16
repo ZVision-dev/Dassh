@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>حساب المستخدم - Dash</title>
+
+<style>
+
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.box{
+width:90%;
+max-width:400px;
+margin:30px auto;
+background:#181818;
+padding:20px;
+border-radius:20px;
+}
+
+.photo{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.post{
+background:#222;
+padding:15px;
+margin:15px;
+border-radius:15px;
+}
+
+.post img{
+width:100%;
+border-radius:15px;
+}
+
+button{
+background:#333;
+color:white;
+border:0;
+padding:10px;
+border-radius:20px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<img id="photo" class="photo" src="https://picsum.photos/200">
+
+
+<h1 id="name">...</h1>
+
+
+<div>
+
+👥 المتابعون:
+<span id="followers">0</span>
+
+</div>
+
+
+<br>
+
+
+<button onclick="followUser()">
+➕ متابعة
+</button>
+
+
+
+<h2>المنشورات</h2>
+
+
+<div id="posts"></div>
+
+
+</div>
+
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc,
+addDoc,
+query,
+where
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+let target="";
+
+let me="زائر";
+
+
+
+let params=new URLSearchParams(location.search);
+
+target=params.get("user");
+
+
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+me=user.email;
+
+}
+
+loadUser();
+
+});
+
+
+
+
+async function loadUser(){
+
+
+let users=await getDocs(
+
+query(
+
+collection(db,"users"),
+
+where("username","==",target)
+
+)
+
+);
+
+
+
+users.forEach((u)=>{
+
+
+let data=u.data();
+
+
+document.getElementById("name").innerHTML=
+"👤 "+data.username;
+
+
+document.getElementById("photo").src=
+data.photo || "https://picsum.photos/200";
+
+
+});
+
+
+
+let posts=await getDocs(
+
+query(
+
+collection(db,"posts"),
+
+where("username","==",target)
+
+)
+
+);
+
+
+
+let box=document.getElementById("posts");
+
+
+
+posts.forEach((p)=>{
+
+
+let data=p.data();
+
+
+box.innerHTML += `
+
+<div class="post">
+
+${data.image ? `<img src="${data.image}">`:""}
+
+<p>${data.text}</p>
+
+</div>
+
+`;
+
+
+});
+
+
+
+let follows=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("following","==",target)
+
+)
+
+);
+
+
+document.getElementById("followers").innerHTML=
+follows.size;
+
+
+}
+
+
+
+
+window.followUser=async function(){
+
+
+await addDoc(
+
+collection(db,"follows"),
+
+{
+
+follower:me,
+
+following:target
+
+}
+
+);
+
+
+alert("✅ تمت المتابعة");
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
