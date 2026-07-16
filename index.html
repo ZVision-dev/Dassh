@@ -37,13 +37,6 @@ width:100%;
 border-radius:15px;
 }
 
-input{
-width:90%;
-padding:10px;
-border-radius:10px;
-border:0;
-}
-
 button{
 background:#333;
 color:white;
@@ -51,6 +44,13 @@ border:0;
 padding:10px;
 border-radius:20px;
 margin:5px;
+}
+
+input{
+width:90%;
+padding:10px;
+border-radius:10px;
+border:0;
 }
 
 .comment{
@@ -64,7 +64,15 @@ margin:5px;
 background:#006600;
 }
 
+
+.followed{
+background:#555;
+}
+
+
+
 .nav{
+
 position:fixed;
 bottom:0;
 left:0;
@@ -72,10 +80,14 @@ width:100%;
 background:#111;
 text-align:center;
 padding:8px;
+
 }
 
+
 .nav button{
+
 font-size:18px;
+
 }
 
 </style>
@@ -96,6 +108,7 @@ font-size:18px;
 
 
 <div id="posts"></div>
+
 
 
 <div class="nav">
@@ -181,18 +194,51 @@ const auth=getAuth(app);
 
 let username="زائر";
 
+let followingList=[];
 
 
-onAuthStateChanged(auth,(user)=>{
+
+onAuthStateChanged(auth,async(user)=>{
+
 
 if(user){
 
 username=user.email;
 
-}
+
+let follows=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("follower","==",username)
+
+)
+
+);
+
+
+follows.forEach((f)=>{
+
+followingList.push(f.data().following);
 
 });
 
+
+}
+
+
+loadPosts();
+
+
+});
+
+
+
+
+
+async function loadPosts(){
 
 
 const box=document.getElementById("posts");
@@ -208,6 +254,11 @@ snapshot.forEach((item)=>{
 let post=item.data();
 
 let id=item.id;
+
+
+
+let followed =
+followingList.includes(post.username);
 
 
 
@@ -229,9 +280,10 @@ style="color:white;text-decoration:none;">
 
 
 
-<button class="follow" onclick="follow('${post.username}')">
+<button class="${followed ? 'followed':'follow'}"
+onclick="follow('${post.username}',this)">
 
-➕ متابعة
+${followed ? '✅ متابَع':'➕ متابعة'}
 
 </button>
 
@@ -279,7 +331,10 @@ ${post.image ? `<img src="${post.image}">`:""}
 loadComments(id);
 
 
-});async function loadComments(postId){
+});
+
+
+}async function loadComments(postId){
 
 
 let comments=await getDocs(
@@ -406,7 +461,45 @@ location.reload();
 
 
 
-window.follow=async function(user){
+
+window.follow=async function(user,btn){
+
+
+if(user==username){
+
+alert("لا يمكنك متابعة نفسك");
+
+return;
+
+}
+
+
+
+let check=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("follower","==",username),
+
+where("following","==",user)
+
+)
+
+);
+
+
+
+if(!check.empty){
+
+alert("أنت تتابعه بالفعل");
+
+return;
+
+}
+
+
 
 
 await addDoc(
@@ -441,11 +534,15 @@ text:"👥 "+username+" بدأ بمتابعتك"
 
 
 
+btn.innerHTML="✅ متابَع";
+
+btn.className="followed";
+
+
 alert("✅ تمت المتابعة");
 
 
 }
-
 
 
 </script>
