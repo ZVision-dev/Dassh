@@ -54,7 +54,7 @@ margin:5px;
 
 .comment{
 background:#333;
-padding:8px;
+padding:10px;
 border-radius:10px;
 margin:5px;
 }
@@ -72,6 +72,7 @@ margin:5px;
 <h1>🚀 Dash</h1>
 
 <p id="welcome">👋 مرحبًا</p>
+
 
 <a href="register.html"><button>👤 حساب</button></a>
 
@@ -163,7 +164,6 @@ username=user.email;
 const box=document.getElementById("posts");
 
 
-
 const snapshot=await getDocs(collection(db,"posts"));
 
 
@@ -207,7 +207,11 @@ ${post.image ? `<img src="${post.image}">`:""}
 </button>
 
 
-<div id="comments${id}"></div>
+
+<div id="comments${id}">
+
+</div>
+
 
 
 </div>
@@ -217,7 +221,65 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 
 
+loadComments(id);
+
+
+
 });
+
+
+
+
+
+async function loadComments(postId){
+
+
+let comments=await getDocs(
+
+query(
+
+collection(db,"comments"),
+
+where("post","==",postId)
+
+)
+
+);
+
+
+
+let area=document.getElementById(
+"comments"+postId
+);
+
+
+
+comments.forEach((item)=>{
+
+
+let c=item.data();
+
+
+
+area.innerHTML += `
+
+<div class="comment">
+
+👤 ${c.user}
+
+<br>
+
+${c.text}
+
+</div>
+
+`;
+
+
+});
+
+
+}
 
 
 
@@ -225,16 +287,25 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 window.likePost=async function(id,likes,btn){
 
+
 await updateDoc(
+
 doc(db,"posts",id),
+
 {
+
 likes:likes+1
+
 }
+
 );
+
 
 btn.innerHTML="❤️ "+(likes+1);
 
+
 }
+
 
 
 
@@ -245,7 +316,15 @@ window.addComment=async function(id){
 let text=document.getElementById("c"+id).value;
 
 
-await addDoc(collection(db,"comments"),{
+if(text=="") return;
+
+
+
+await addDoc(
+
+collection(db,"comments"),
+
+{
 
 post:id,
 
@@ -253,10 +332,10 @@ user:username,
 
 text:text
 
-});
+}
 
+);
 
-alert("✅ تم إضافة التعليق");
 
 
 location.reload();
