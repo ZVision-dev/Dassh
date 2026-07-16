@@ -32,11 +32,6 @@ header {
     border-radius:20px;
 }
 
-.post img {
-    width:100%;
-    border-radius:15px;
-}
-
 button {
     background:#333;
     color:white;
@@ -64,70 +59,26 @@ a {
 
 <p>منصة مشاركة المحتوى</p>
 
+<a href="upload.html">
+<button>➕ إضافة منشور</button>
+</a>
+
 </header>
 
 
-
-<div class="post">
-
-
-<img src="videos/IMG_20260716_171141_984.jpg">
+<div id="posts"></div>
 
 
-<h3>👤 @zayed</h3>
-
-
-<p>
-أول منشور في Dash 🎉
-</p>
-
-
-
-<button onclick="like()">
-❤️ <span id="likes">0</span>
-</button>
-
-
-<a href="profile.html">
-<button>
-👤 الحساب
-</button>
-</a>
-
-
-<a href="upload.html">
-<button>
-➕ إضافة
-</button>
-</a>
-
-
-</div>
-
-
-
-
-<script>
-
-let likes = 0;
-
-function like(){
-
-likes++;
-
-document.getElementById("likes").innerHTML = likes;
-
-}
-
-</script>
-
-
-
-<!-- Firebase -->
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 const firebaseConfig = {
@@ -149,12 +100,41 @@ appId: "1:360444967805:web:fe10ef5a579424141caa14"
 
 const app = initializeApp(firebaseConfig);
 
+const db = getFirestore(app);
 
-console.log("Firebase متصل بنجاح 🚀");
+
+
+const postsBox = document.getElementById("posts");
+
+
+const snapshot = await getDocs(collection(db,"posts"));
+
+
+snapshot.forEach((doc)=>{
+
+let post = doc.data();
+
+
+postsBox.innerHTML += `
+
+<div class="post">
+
+<h3>👤 @${post.username}</h3>
+
+<p>${post.text}</p>
+
+<button>
+❤️ إعجاب
+</button>
+
+</div>
+
+`;
+
+});
 
 
 </script>
-
 
 
 </body>
