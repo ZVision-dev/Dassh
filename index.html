@@ -64,15 +64,12 @@ margin:5px;
 background:#006600;
 }
 
-
 .followed{
 background:#555;
 }
 
 
-
 .nav{
-
 position:fixed;
 bottom:0;
 left:0;
@@ -80,15 +77,13 @@ width:100%;
 background:#111;
 text-align:center;
 padding:8px;
-
 }
 
 
 .nav button{
-
 font-size:18px;
-
 }
+
 
 </style>
 
@@ -110,7 +105,6 @@ font-size:18px;
 <div id="posts"></div>
 
 
-
 <div class="nav">
 
 <a href="index.html">
@@ -127,6 +121,10 @@ font-size:18px;
 
 <a href="notifications.html">
 <button>🔔</button>
+</a>
+
+<a href="messages.html">
+<button>💬</button>
 </a>
 
 <a href="profile.html">
@@ -257,8 +255,7 @@ let id=item.id;
 
 
 
-let followed =
-followingList.includes(post.username);
+let followed = followingList.includes(post.username);
 
 
 
@@ -501,7 +498,6 @@ return;
 
 
 
-
 await addDoc(
 
 collection(db,"follows"),
@@ -543,6 +539,7 @@ alert("✅ تمت المتابعة");
 
 
 }
+
 
 
 </script>
