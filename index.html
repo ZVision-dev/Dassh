@@ -10,39 +10,35 @@
 
 <style>
 
-body {
-    margin:0;
-    background:#000;
-    color:white;
-    font-family:Arial;
+body{
+margin:0;
+background:#000;
+color:white;
+font-family:Arial;
 }
 
-header {
-    text-align:center;
-    padding:20px;
-    background:#111;
+header{
+text-align:center;
+padding:20px;
+background:#111;
 }
 
-.post {
-    width:90%;
-    max-width:400px;
-    margin:30px auto;
-    background:#181818;
-    padding:15px;
-    border-radius:20px;
+.post{
+width:90%;
+max-width:400px;
+margin:20px auto;
+background:#181818;
+padding:15px;
+border-radius:20px;
 }
 
-button {
-    background:#333;
-    color:white;
-    border:none;
-    padding:12px;
-    border-radius:20px;
-    margin:5px;
-}
-
-a {
-    text-decoration:none;
+button{
+background:#333;
+color:white;
+border:none;
+padding:12px;
+border-radius:20px;
+margin:5px;
 }
 
 </style>
@@ -72,13 +68,18 @@ a {
 
 <script type="module">
 
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
 
 import {
 getFirestore,
 collection,
-getDocs
+getDocs,
+doc,
+updateDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 
 
 const firebaseConfig = {
@@ -98,40 +99,76 @@ appId: "1:360444967805:web:fe10ef5a579424141caa14"
 };
 
 
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
 
 
-const postsBox = document.getElementById("posts");
+const box = document.getElementById("posts");
 
 
 const snapshot = await getDocs(collection(db,"posts"));
 
 
-snapshot.forEach((doc)=>{
 
-let post = doc.data();
+snapshot.forEach((item)=>{
 
 
-postsBox.innerHTML += `
+let post = item.data();
+
+let id = item.id;
+
+
+box.innerHTML += `
+
 
 <div class="post">
 
+
 <h3>👤 @${post.username}</h3>
+
 
 <p>${post.text}</p>
 
-<button>
-❤️ إعجاب
+
+<button onclick="likePost('${id}',${post.likes || 0})">
+
+❤️ ${post.likes || 0}
+
 </button>
+
 
 </div>
 
+
 `;
 
+
 });
+
+
+
+
+window.likePost = async function(id,likes){
+
+
+const postRef = doc(db,"posts",id);
+
+
+await updateDoc(postRef,{
+
+likes: likes + 1
+
+});
+
+
+location.reload();
+
+
+}
+
 
 
 </script>
