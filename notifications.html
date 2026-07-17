@@ -31,6 +31,7 @@ background:#222;
 padding:15px;
 margin:10px;
 border-radius:15px;
+text-align:right;
 }
 
 button{
@@ -60,15 +61,17 @@ border-radius:20px;
 
 <br>
 
+
 <a href="index.html">
+
 <button>
 🏠 الرئيسية
 </button>
+
 </a>
 
 
 </div>
-
 
 
 
@@ -85,12 +88,12 @@ getFirestore,
 collection,
 getDocs,
 query,
-where
+where,
+orderBy
 
 }
 
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
 
 
 import {
@@ -180,7 +183,6 @@ async function loadNotifications(){
 let box=document.getElementById("notifications");
 
 
-
 let data=await getDocs(
 
 query(
@@ -192,6 +194,16 @@ where("to","==",username)
 )
 
 );
+
+
+
+if(data.empty){
+
+box.innerHTML="لا توجد إشعارات 🔕";
+
+return;
+
+}
 
 
 
@@ -207,6 +219,10 @@ box.innerHTML += `
 <div class="notice">
 
 🔔 ${n.text}
+
+<br>
+
+${n.from ? "👤 "+n.from:""}
 
 </div>
 
