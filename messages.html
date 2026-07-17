@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>الرسائل - Dash</title>
+<title>المحادثات - Dash</title>
 
 <style>
 
@@ -26,28 +26,31 @@ padding:20px;
 border-radius:20px;
 }
 
-input{
-width:90%;
-padding:12px;
-border-radius:10px;
-border:0;
+.chat{
+
+background:#222;
+padding:15px;
+border-radius:15px;
 margin:10px;
+cursor:pointer;
+text-align:right;
+
+}
+
+.chat:hover{
+
+background:#333;
+
 }
 
 button{
+
 background:#333;
 color:white;
 border:0;
 padding:10px 20px;
 border-radius:20px;
-}
 
-.msg{
-background:#222;
-padding:10px;
-border-radius:15px;
-margin:10px;
-text-align:right;
 }
 
 </style>
@@ -61,24 +64,10 @@ text-align:right;
 <div class="box">
 
 
-<h1>💬 الرسائل</h1>
+<h1>💬 المحادثات</h1>
 
 
-<input id="to" placeholder="اسم المستخدم">
-
-
-<input id="text" placeholder="اكتب رسالة">
-
-
-<button onclick="sendMessage()">
-إرسال
-</button>
-
-
-<h2>المحادثات</h2>
-
-
-<div id="messages"></div>
+<div id="list"></div>
 
 
 </div>
@@ -96,7 +85,6 @@ import {
 
 getFirestore,
 collection,
-addDoc,
 getDocs,
 query,
 where
@@ -153,7 +141,7 @@ if(user){
 
 me=user.email;
 
-loadMessages();
+loadChats();
 
 }
 
@@ -162,53 +150,43 @@ loadMessages();
 
 
 
-window.sendMessage=async function(){
+async function loadChats(){
 
 
-let to=document.getElementById("to").value;
-
-let text=document.getElementById("text").value;
-
-
-if(!to || !text) return;
+let users=[];
 
 
 
-await addDoc(
+let sent=await getDocs(
+
+query(
 
 collection(db,"messages"),
 
-{
+where("from","==",me)
 
-from:me,
-
-to:to,
-
-text:text,
-
-time:new Date()
-
-}
+)
 
 );
 
 
 
-alert("✅ تم إرسال الرسالة");
+sent.forEach((m)=>{
 
+let data=m.data();
+
+if(!users.includes(data.to)){
+
+users.push(data.to);
 
 }
 
+});
 
 
 
-async function loadMessages(){
 
-
-let box=document.getElementById("messages");
-
-
-let data=await getDocs(
+let received=await getDocs(
 
 query(
 
@@ -222,21 +200,37 @@ where("to","==",me)
 
 
 
-data.forEach((m)=>{
+received.forEach((m)=>{
+
+let data=m.data();
+
+if(!users.includes(data.from)){
+
+users.push(data.from);
+
+}
+
+});
 
 
-let msg=m.data();
+
+
+let box=document.getElementById("list");
+
+
+
+users.forEach((user)=>{
 
 
 box.innerHTML += `
 
-<div class="msg">
+<div class="chat" onclick="openChat('${user}')">
 
-👤 ${msg.from}
+👤 ${user}
 
 <br>
 
-${msg.text}
+اضغط لفتح المحادثة 💬
 
 </div>
 
@@ -246,6 +240,17 @@ ${msg.text}
 
 
 }
+
+
+
+
+
+window.openChat=function(user){
+
+location.href="chat.html?user="+user;
+
+}
+
 
 
 </script>
