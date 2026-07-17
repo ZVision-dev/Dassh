@@ -79,23 +79,34 @@ margin-right:5px;
 
 </head>
 
+
 <body>
 
+
 <header id="title">
+
 💬 المحادثة
+
 </header>
 
+
 <div id="messages"></div>
+
 
 <div class="bottom">
 
 <input id="text" placeholder="اكتب رسالة">
 
+
 <button id="send">
+
 إرسال
+
 </button>
 
+
 </div><script type="module">
+
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -108,7 +119,6 @@ collection,
 addDoc,
 getDocs,
 query,
-where,
 orderBy,
 serverTimestamp
 
@@ -173,6 +183,7 @@ document.getElementById("title").innerHTML=
 
 onAuthStateChanged(auth,(user)=>{
 
+
 if(user){
 
 me=user.email;
@@ -181,7 +192,10 @@ loadChat();
 
 }
 
+
 });
+
+
 
 
 
@@ -257,6 +271,8 @@ if(text=="") return;
 
 
 
+// حفظ الرسالة
+
 await addDoc(
 
 collection(db,"messages"),
@@ -277,6 +293,30 @@ time:serverTimestamp()
 
 
 
+// إنشاء إشعار للمستخدم الآخر
+
+await addDoc(
+
+collection(db,"notifications"),
+
+{
+
+to:target,
+
+from:me,
+
+text:"💬 أرسل لك رسالة جديدة",
+
+time:serverTimestamp(),
+
+read:false
+
+}
+
+);
+
+
+
 input.value="";
 
 
@@ -284,6 +324,7 @@ loadChat();
 
 
 }
+
 
 
 </script>
