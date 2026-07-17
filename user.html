@@ -51,6 +51,11 @@ color:white;
 border:0;
 padding:10px;
 border-radius:20px;
+margin:5px;
+}
+
+.chat{
+background:#0066ff;
 }
 
 </style>
@@ -86,6 +91,11 @@ border-radius:20px;
 </button>
 
 
+<button class="chat" onclick="openChat()">
+💬 مراسلة
+</button>
+
+
 
 <h2>المنشورات</h2>
 
@@ -110,8 +120,6 @@ import {
 getFirestore,
 collection,
 getDocs,
-doc,
-getDoc,
 addDoc,
 query,
 where
@@ -307,6 +315,14 @@ alert("✅ تمت المتابعة");
 
 }
 
+
+
+
+window.openChat=function(){
+
+location.href="chat.html?user="+target;
+
+}
 
 
 </script>
