@@ -1,87 +1,556 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dash - Modern</title>
-    <style>
-        :root { --bg: #0a0a0a; --accent: #3b82f6; --card: #161616; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding-bottom: 100px; }
-        
-        header { padding: 2rem; text-align: center; border-bottom: 1px solid #222; background: #000; }
-        h1 { margin: 0; color: var(--accent); font-size: 1.8rem; }
-        
-        .posts-container { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
-        
-        .post { width: 100%; max-width: 400px; background: var(--card); border-radius: 24px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .post img { width: 100%; border-radius: 16px; margin-bottom: 15px; }
-        
-        button { background: #222; color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #333; transform: scale(1.05); }
-        .btn-like { background: #222; color: #ff4757; }
-        
-        .nav { position: fixed; bottom: 0; width: 100%; background: #111; padding: 15px 0; display: flex; justify-content: space-around; border-top: 1px solid #222; }
-        .nav button { background: none; font-size: 20px; }
-    </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dash</title>
+<title>Dash</title>
+
+<script async
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9458785506328025"
+crossorigin="anonymous"></script>
+
+<style>
+<style>
+
+body{
+background:#000;
+color:white;
+font-family:Arial;
+padding-bottom:80px;
+}
+
+header{
+text-align:center;
+padding:20px;
+background:#111;
+}
+
+.post{
+width:90%;
+max-width:400px;
+margin:20px auto;
+background:#181818;
+padding:15px;
+border-radius:20px;
+}
+
+.post img{
+width:100%;
+border-radius:15px;
+}
+
+button{
+background:#333;
+color:white;
+border:0;
+padding:10px;
+border-radius:20px;
+margin:5px;
+}
+
+input{
+width:90%;
+padding:10px;
+border-radius:10px;
+border:0;
+}
+
+.comment{
+background:#333;
+padding:10px;
+border-radius:10px;
+margin:5px;
+}
+
+.follow{
+background:#006600;
+}
+
+.followed{
+background:#555;
+}
+
+
+.nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#111;
+text-align:center;
+padding:8px;
+}
+
+
+.nav button{
+font-size:18px;
+}
+
+
+</style>
+
 </head>
+
+
 <body>
 
-    <header>
-        <h1>🚀 Dash</h1>
-    </header>
 
-    <div id="posts" class="posts-container"></div>
+<header>
 
-    <nav class="nav">
-        <button onclick="location.href='index.html'">🏠</button>
-        <button onclick="location.href='search.html'">🔍</button>
-        <button onclick="location.href='upload.html'" style="background:var(--accent)">➕</button>
-        <button onclick="location.href='notifications.html'">🔔</button>
-        <button onclick="location.href='profile.html'">👤</button>
-    </nav>
+<h1>🚀 Dash</h1>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
-            authDomain: "dassh-e5b89.firebaseapp.com",
-            projectId: "dassh-e5b89",
-            storageBucket: "dassh-e5b89.firebasestorage.app",
-            messagingSenderId: "360444967805",
-            appId: "1:360444967805:web:fe10ef5a579424141caa14"
-        };
+<p>👋 مرحبًا بك</p>
 
-        const db = getFirestore(initializeApp(firebaseConfig));
+</header>
 
-        async function loadPosts() {
-            const box = document.getElementById("posts");
-            const snapshot = await getDocs(collection(db, "posts"));
-            box.innerHTML = "";
-            snapshot.forEach((item) => {
-                let post = item.data();
-                let id = item.id;
-                box.innerHTML += `
-                    <div class="post">
-                        <h3 style="margin-top:0">@${post.username}</h3>
-                        ${post.image ? `<img src="${post.image}">` : ""}
-                        <p style="color:#ccc">${post.text}</p>
-                        <div style="display:flex; gap:10px; margin-top:15px;">
-                            <button class="btn-like" onclick="likePost('${id}', ${post.likes || 0}, this)">❤️ ${post.likes || 0}</button>
-                            <button>💬 تعليق</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
 
-        window.likePost = async (id, likes, btn) => {
-            await updateDoc(doc(db, "posts", id), { likes: likes + 1 });
-            btn.innerHTML = "❤️ " + (likes + 1);
-        };
+<div id="posts"></div>
 
-        loadPosts();
-    </script>
+
+<div class="nav">
+
+<a href="index.html">
+<button>🏠</button>
+</a>
+
+<a href="search.html">
+<button>🔍</button>
+</a>
+
+<a href="upload.html">
+<button>➕</button>
+</a>
+
+<a href="notifications.html">
+<button>🔔</button>
+</a>
+
+<a href="messages.html">
+<button>💬</button>
+</a>
+
+<a href="profile.html">
+<button>📱</button>
+</a>
+
+</div><script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+addDoc,
+doc,
+updateDoc,
+query,
+where
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
+
+authDomain:"dassh-e5b89.firebaseapp.com",
+
+projectId:"dassh-e5b89",
+
+storageBucket:"dassh-e5b89.firebasestorage.app",
+
+messagingSenderId:"360444967805",
+
+appId:"1:360444967805:web:fe10ef5a579424141caa14"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getFirestore(app);
+
+const auth=getAuth(app);
+
+
+
+let username="زائر";
+
+let followingList=[];
+
+
+
+onAuthStateChanged(auth,async(user)=>{
+
+
+if(user){
+
+username=user.email;
+
+
+let follows=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("follower","==",username)
+
+)
+
+);
+
+
+follows.forEach((f)=>{
+
+followingList.push(f.data().following);
+
+});
+
+
+}
+
+
+loadPosts();
+
+
+});
+
+
+
+
+
+async function loadPosts(){
+
+
+const box=document.getElementById("posts");
+
+
+const snapshot=await getDocs(collection(db,"posts"));
+
+
+
+snapshot.forEach((item)=>{
+
+
+let post=item.data();
+
+let id=item.id;
+
+
+
+let followed = followingList.includes(post.username);
+
+
+
+box.innerHTML += `
+
+
+<div class="post">
+
+
+<h3>
+
+
+<a href="user.html?user=${post.username}" 
+style="color:white;text-decoration:none;">
+
+👤 @${post.username}
+
+</a>
+
+
+
+<button class="${followed ? 'followed':'follow'}"
+onclick="follow('${post.username}',this)">
+
+${followed ? '✅ متابَع':'➕ متابعة'}
+
+</button>
+
+
+</h3>
+
+
+
+${post.image ? `<img src="${post.image}">`:""}
+
+
+<p>${post.text}</p>
+
+
+
+<button onclick="likePost('${id}',${post.likes || 0},this)">
+
+❤️ ${post.likes || 0}
+
+</button>
+
+
+
+<input id="c${id}" placeholder="اكتب تعليق">
+
+
+<button onclick="addComment('${id}','${post.username}')">
+
+💬 تعليق
+
+</button>
+
+
+
+<div id="comments${id}"></div>
+
+
+</div>
+
+
+`;
+
+
+
+loadComments(id);
+
+
+});
+
+
+}async function loadComments(postId){
+
+
+let comments=await getDocs(
+
+query(
+
+collection(db,"comments"),
+
+where("post","==",postId)
+
+)
+
+);
+
+
+
+let area=document.getElementById("comments"+postId);
+
+
+
+comments.forEach((item)=>{
+
+
+let c=item.data();
+
+
+area.innerHTML += `
+
+<div class="comment">
+
+👤 ${c.user}
+
+<br>
+
+${c.text}
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+
+
+window.likePost=async function(id,likes,btn){
+
+
+await updateDoc(
+
+doc(db,"posts",id),
+
+{
+
+likes:likes+1
+
+}
+
+);
+
+
+btn.innerHTML="❤️ "+(likes+1);
+
+
+}
+
+
+
+
+
+window.addComment=async function(id,owner){
+
+
+let text=document.getElementById("c"+id).value;
+
+
+if(text=="") return;
+
+
+
+await addDoc(
+
+collection(db,"comments"),
+
+{
+
+post:id,
+
+user:username,
+
+text:text
+
+}
+
+);
+
+
+
+await addDoc(
+
+collection(db,"notifications"),
+
+{
+
+to:owner,
+
+text:"💬 "+username+" علق على منشورك"
+
+}
+
+);
+
+
+
+location.reload();
+
+
+}
+
+
+
+
+
+window.follow=async function(user,btn){
+
+
+if(user==username){
+
+alert("لا يمكنك متابعة نفسك");
+
+return;
+
+}
+
+
+
+let check=await getDocs(
+
+query(
+
+collection(db,"follows"),
+
+where("follower","==",username),
+
+where("following","==",user)
+
+)
+
+);
+
+
+
+if(!check.empty){
+
+alert("أنت تتابعه بالفعل");
+
+return;
+
+}
+
+
+
+await addDoc(
+
+collection(db,"follows"),
+
+{
+
+follower:username,
+
+following:user
+
+}
+
+);
+
+
+
+await addDoc(
+
+collection(db,"notifications"),
+
+{
+
+to:user,
+
+text:"👥 "+username+" بدأ بمتابعتك"
+
+}
+
+);
+
+
+
+btn.innerHTML="✅ متابَع";
+
+btn.className="followed";
+
+
+alert("✅ تمت المتابعة");
+
+
+}
+
+
+
+</script>
+
+
 </body>
+
 </html>
