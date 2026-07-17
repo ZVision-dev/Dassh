@@ -33,7 +33,7 @@ border-radius:50%;
 object-fit:cover;
 }
 
-input{
+input,textarea{
 width:90%;
 padding:10px;
 margin:8px;
@@ -41,16 +41,9 @@ border-radius:10px;
 border:0;
 }
 
-.post{
-background:#222;
-padding:15px;
-margin:15px 0;
-border-radius:15px;
-}
-
-.post img{
-width:100%;
-border-radius:15px;
+textarea{
+height:80px;
+resize:none;
 }
 
 button{
@@ -73,6 +66,18 @@ gap:20px;
 margin:15px;
 }
 
+.post{
+background:#222;
+padding:15px;
+margin:15px 0;
+border-radius:15px;
+}
+
+.post img{
+width:100%;
+border-radius:15px;
+}
+
 </style>
 
 </head>
@@ -89,7 +94,11 @@ margin:15px;
 
 <h1 id="name">...</h1>
 
+
 <p id="email"></p>
+
+
+<p id="bio">...</p>
 
 
 <div class="stats">
@@ -107,18 +116,27 @@ margin:15px;
 <span id="following">0</span>
 </div>
 
+
 </div>
 
+
+
+<h3>✏️ تعديل الملف</h3>
 
 
 <input id="newName" placeholder="الاسم الجديد">
 
 
-<input id="newPhoto" placeholder="رابط الصورة الجديدة">
+<input id="newPhoto" placeholder="رابط الصورة">
+
+
+<textarea id="newBio" placeholder="اكتب نبذة عنك"></textarea>
 
 
 <button onclick="updateProfile()">
-✏️ حفظ التعديل
+
+💾 حفظ
+
 </button>
 
 
@@ -126,23 +144,20 @@ margin:15px;
 
 
 <button onclick="logout()">
+
 🚪 تسجيل الخروج
+
 </button>
 
 
 
-<h2>منشوراتي</h2>
+<h2>📌 منشوراتي</h2>
 
 
 <div id="myPosts"></div>
 
 
-</div>
-
-
-
-
-<script type="module">
+</div><script type="module">
 
 
 import { initializeApp }
@@ -152,21 +167,13 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
 
 getFirestore,
-
 doc,
-
 getDoc,
-
 updateDoc,
-
 collection,
-
 getDocs,
-
 query,
-
 where,
-
 deleteDoc
 
 }
@@ -178,9 +185,7 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import {
 
 getAuth,
-
 onAuthStateChanged,
-
 signOut
 
 }
@@ -220,7 +225,6 @@ let uid="";
 let username="";
 
 
-
 const postsBox=document.getElementById("myPosts");
 
 
@@ -252,16 +256,45 @@ if(userDoc.exists()){
 let data=userDoc.data();
 
 
+
 username=data.username;
+
 
 
 document.getElementById("name").innerHTML=
 "👤 "+username;
 
 
+
 document.getElementById("photo").src=
 data.photo || "https://picsum.photos/200";
 
+
+
+document.getElementById("bio").innerHTML=
+data.bio || "لا يوجد وصف";
+
+
+
+loadPosts();
+
+
+
+loadStats();
+
+
+}
+
+
+}
+
+
+});
+
+
+
+
+async function loadPosts(){
 
 
 let posts=await getDocs(
@@ -289,9 +322,12 @@ postsBox.innerHTML += `
 
 <div class="post">
 
+
 ${post.image ? `<img src="${post.image}">`:""}
 
+
 <p>${post.text}</p>
+
 
 
 <button class="delete" onclick="deletePost('${item.id}')">
@@ -305,21 +341,12 @@ ${post.image ? `<img src="${post.image}">`:""}
 
 `;
 
-});
-
-
-await loadStats();
-
-
-}
-
-
-}
 
 
 });
 
 
+}
 
 
 
@@ -358,22 +385,49 @@ document.getElementById("followers").innerHTML=
 followers.size;
 
 
+
 document.getElementById("following").innerHTML=
 following.size;
 
 
-}
-
-
-
-
-
-window.updateProfile=async function(){
+}window.updateProfile=async function(){
 
 
 let name=document.getElementById("newName").value;
 
 let photo=document.getElementById("newPhoto").value;
+
+let bio=document.getElementById("newBio").value;
+
+
+
+let data={};
+
+
+
+if(name){
+
+data.username=name;
+
+username=name;
+
+}
+
+
+
+if(photo){
+
+data.photo=photo;
+
+}
+
+
+
+if(bio){
+
+data.bio=bio;
+
+}
 
 
 
@@ -381,25 +435,18 @@ await updateDoc(
 
 doc(db,"users",uid),
 
-{
-
-username:name || username,
-
-photo:photo
-
-}
+data
 
 );
 
 
 
-alert("✅ تم التحديث");
+alert("✅ تم تحديث الملف");
 
 location.reload();
 
 
 }
-
 
 
 
@@ -414,6 +461,9 @@ doc(db,"posts",id)
 );
 
 
+alert("🗑️ تم حذف المنشور");
+
+
 location.reload();
 
 
@@ -422,12 +472,14 @@ location.reload();
 
 
 
-
 window.logout=function(){
+
 
 signOut(auth);
 
+
 location.href="login.html";
+
 
 }
 
