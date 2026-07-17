@@ -1,556 +1,103 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dash</title>
-<title>Dash</title>
-
-<script async
-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9458785506328025"
-crossorigin="anonymous"></script>
-
-<style>
-<style>
-
-body{
-background:#000;
-color:white;
-font-family:Arial;
-padding-bottom:80px;
-}
-
-header{
-text-align:center;
-padding:20px;
-background:#111;
-}
-
-.post{
-width:90%;
-max-width:400px;
-margin:20px auto;
-background:#181818;
-padding:15px;
-border-radius:20px;
-}
-
-.post img{
-width:100%;
-border-radius:15px;
-}
-
-button{
-background:#333;
-color:white;
-border:0;
-padding:10px;
-border-radius:20px;
-margin:5px;
-}
-
-input{
-width:90%;
-padding:10px;
-border-radius:10px;
-border:0;
-}
-
-.comment{
-background:#333;
-padding:10px;
-border-radius:10px;
-margin:5px;
-}
-
-.follow{
-background:#006600;
-}
-
-.followed{
-background:#555;
-}
-
-
-.nav{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#111;
-text-align:center;
-padding:8px;
-}
-
-
-.nav button{
-font-size:18px;
-}
-
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dash - منصة اجتماعية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: white; font-family: sans-serif; }
+        .glass { background: rgba(25, 25, 25, 0.8); backdrop-filter: blur(10px); }
+        .post-card { transition: transform 0.2s; }
+        .post-card:hover { transform: translateY(-5px); }
+    </style>
 </head>
-
-
-<body>
-
-
-<header>
-
-<h1>🚀 Dash</h1>
-
-<p>👋 مرحبًا بك</p>
-
-</header>
-
-
-<div id="posts"></div>
-
-
-<div class="nav">
-
-<a href="index.html">
-<button>🏠</button>
-</a>
-
-<a href="search.html">
-<button>🔍</button>
-</a>
-
-<a href="upload.html">
-<button>➕</button>
-</a>
-
-<a href="notifications.html">
-<button>🔔</button>
-</a>
-
-<a href="messages.html">
-<button>💬</button>
-</a>
-
-<a href="profile.html">
-<button>📱</button>
-</a>
-
-</div><script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-
-import {
-
-getFirestore,
-collection,
-getDocs,
-addDoc,
-doc,
-updateDoc,
-query,
-where
-
-}
-
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-
-import {
-
-getAuth,
-onAuthStateChanged
-
-}
-
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
-
-
-const firebaseConfig={
-
-apiKey:"AIzaSyCEXGRHOK4sfDZcxOpEsDEoyyG12BqV0io",
-
-authDomain:"dassh-e5b89.firebaseapp.com",
-
-projectId:"dassh-e5b89",
-
-storageBucket:"dassh-e5b89.firebasestorage.app",
-
-messagingSenderId:"360444967805",
-
-appId:"1:360444967805:web:fe10ef5a579424141caa14"
-
-};
-
-
-
-const app=initializeApp(firebaseConfig);
-
-const db=getFirestore(app);
-
-const auth=getAuth(app);
-
-
-
-let username="زائر";
-
-let followingList=[];
-
-
-
-onAuthStateChanged(auth,async(user)=>{
-
-
-if(user){
-
-username=user.email;
-
-
-let follows=await getDocs(
-
-query(
-
-collection(db,"follows"),
-
-where("follower","==",username)
-
-)
-
-);
-
-
-follows.forEach((f)=>{
-
-followingList.push(f.data().following);
-
-});
-
-
-}
-
-
-loadPosts();
-
-
-});
-
-
-
-
-
-async function loadPosts(){
-
-
-const box=document.getElementById("posts");
-
-
-const snapshot=await getDocs(collection(db,"posts"));
-
-
-
-snapshot.forEach((item)=>{
-
-
-let post=item.data();
-
-let id=item.id;
-
-
-
-let followed = followingList.includes(post.username);
-
-
-
-box.innerHTML += `
-
-
-<div class="post">
-
-
-<h3>
-
-
-<a href="user.html?user=${post.username}" 
-style="color:white;text-decoration:none;">
-
-👤 @${post.username}
-
-</a>
-
-
-
-<button class="${followed ? 'followed':'follow'}"
-onclick="follow('${post.username}',this)">
-
-${followed ? '✅ متابَع':'➕ متابعة'}
-
-</button>
-
-
-</h3>
-
-
-
-${post.image ? `<img src="${post.image}">`:""}
-
-
-<p>${post.text}</p>
-
-
-
-<button onclick="likePost('${id}',${post.likes || 0},this)">
-
-❤️ ${post.likes || 0}
-
-</button>
-
-
-
-<input id="c${id}" placeholder="اكتب تعليق">
-
-
-<button onclick="addComment('${id}','${post.username}')">
-
-💬 تعليق
-
-</button>
-
-
-
-<div id="comments${id}"></div>
-
-
-</div>
-
-
-`;
-
-
-
-loadComments(id);
-
-
-});
-
-
-}async function loadComments(postId){
-
-
-let comments=await getDocs(
-
-query(
-
-collection(db,"comments"),
-
-where("post","==",postId)
-
-)
-
-);
-
-
-
-let area=document.getElementById("comments"+postId);
-
-
-
-comments.forEach((item)=>{
-
-
-let c=item.data();
-
-
-area.innerHTML += `
-
-<div class="comment">
-
-👤 ${c.user}
-
-<br>
-
-${c.text}
-
-</div>
-
-`;
-
-});
-
-
-}
-
-
-
-
-
-window.likePost=async function(id,likes,btn){
-
-
-await updateDoc(
-
-doc(db,"posts",id),
-
-{
-
-likes:likes+1
-
-}
-
-);
-
-
-btn.innerHTML="❤️ "+(likes+1);
-
-
-}
-
-
-
-
-
-window.addComment=async function(id,owner){
-
-
-let text=document.getElementById("c"+id).value;
-
-
-if(text=="") return;
-
-
-
-await addDoc(
-
-collection(db,"comments"),
-
-{
-
-post:id,
-
-user:username,
-
-text:text
-
-}
-
-);
-
-
-
-await addDoc(
-
-collection(db,"notifications"),
-
-{
-
-to:owner,
-
-text:"💬 "+username+" علق على منشورك"
-
-}
-
-);
-
-
-
-location.reload();
-
-
-}
-
-
-
-
-
-window.follow=async function(user,btn){
-
-
-if(user==username){
-
-alert("لا يمكنك متابعة نفسك");
-
-return;
-
-}
-
-
-
-let check=await getDocs(
-
-query(
-
-collection(db,"follows"),
-
-where("follower","==",username),
-
-where("following","==",user)
-
-)
-
-);
-
-
-
-if(!check.empty){
-
-alert("أنت تتابعه بالفعل");
-
-return;
-
-}
-
-
-
-await addDoc(
-
-collection(db,"follows"),
-
-{
-
-follower:username,
-
-following:user
-
-}
-
-);
-
-
-
-await addDoc(
-
-collection(db,"notifications"),
-
-{
-
-to:user,
-
-text:"👥 "+username+" بدأ بمتابعتك"
-
-}
-
-);
-
-
-
-btn.innerHTML="✅ متابَع";
-
-btn.className="followed";
-
-
-alert("✅ تمت المتابعة");
-
-
-}
-
-
-
-</script>
-
-
+<body class="pb-24">
+
+    <!-- Header -->
+    <header class="p-6 text-center border-b border-gray-800 glass sticky top-0 z-10">
+        <h1 class="text-2xl font-bold text-blue-500">🚀 Dash</h1>
+    </header>
+
+    <!-- Posts Container -->
+    <main id="posts" class="mt-4 flex flex-col items-center gap-6 px-4"></main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 w-full glass p-4 flex justify-around border-t border-gray-800 z-50">
+        <button onclick="location.href='index.html'">🏠</button>
+        <button onclick="location.href='search.html'">🔍</button>
+        <button onclick="location.href='upload.html'" class="bg-blue-600 px-4 py-2 rounded-full font-bold">+</button>
+        <button onclick="location.href='notifications.html'">🔔</button>
+        <button onclick="location.href='profile.html'">👤</button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+        // أدخل بياناتك هنا
+        const firebaseConfig = {
+            apiKey: "AIzaSy...",
+            authDomain: "dassh-e5b89.firebaseapp.com",
+            projectId: "dassh-e5b89",
+            storageBucket: "dassh-e5b89.firebasestorage.app",
+            messagingSenderId: "360444967805",
+            appId: "1:360444967805:web:fe10ef5a579424141caa14"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUserEmail = "زائر";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) currentUserEmail = user.email;
+            loadPosts();
+        });
+
+        async function loadPosts() {
+            const postsContainer = document.getElementById("posts");
+            const snapshot = await getDocs(collection(db, "posts"));
+            postsContainer.innerHTML = "";
+
+            snapshot.forEach((item) => {
+                const post = item.data();
+                const id = item.id;
+
+                const div = document.createElement("div");
+                div.className = "post-card w-full max-w-md bg-neutral-900 p-4 rounded-3xl border border-gray-800";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-bold text-lg">@${post.username}</span>
+                        <button class="text-sm bg-gray-800 px-3 py-1 rounded-full hover:bg-gray-700">متابعة</button>
+                    </div>
+                    ${post.image ? `<img src="${post.image}" class="rounded-2xl w-full mb-3 shadow-lg">` : ""}
+                    <p class="mb-4 text-gray-300">${post.text}</p>
+                    <div class="flex gap-2">
+                        <button class="bg-gray-800 px-4 py-2 rounded-xl flex-1 hover:bg-red-900 transition" onclick="likePost('${id}', ${post.likes || 0}, this)">❤️ ${post.likes || 0}</button>
+                        <input id="c${id}" class="bg-gray-800 p-2 rounded-xl w-full" placeholder="تعليق...">
+                        <button class="bg-blue-600 px-4 py-2 rounded-xl" onclick="addComment('${id}', '${post.username}')">➤</button>
+                    </div>
+                `;
+                postsContainer.appendChild(div);
+            });
+        }
+
+        // Functions exposed to window
+        window.likePost = async (id, likes, btn) => {
+            await updateDoc(doc(db, "posts", id), { likes: likes + 1 });
+            btn.innerText = "❤️ " + (likes + 1);
+        };
+
+        window.addComment = async (id, owner) => {
+            const input = document.getElementById("c" + id);
+            if (!input.value) return;
+            await addDoc(collection(db, "comments"), { post: id, user: currentUserEmail, text: input.value });
+            alert("تم إرسال التعليق");
+            input.value = "";
+        };
+    </script>
 </body>
-
 </html>
