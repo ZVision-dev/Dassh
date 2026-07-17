@@ -18,52 +18,37 @@ margin:0;
 padding-bottom:80px;
 }
 
-
 header{
 background:#111;
 padding:15px;
 text-align:center;
-font-size:20px;
+font-size:22px;
 }
 
-
 #messages{
-
 padding:15px;
 height:70vh;
 overflow-y:auto;
-
 }
 
-
 .msg{
-
 padding:10px;
 margin:10px;
 border-radius:15px;
 max-width:70%;
-
 }
-
 
 .me{
-
 background:#0066ff;
-margin-right:auto;
-
+margin-left:auto;
 }
-
 
 .other{
-
 background:#333;
-margin-left:auto;
-
+margin-right:auto;
 }
 
-
 .bottom{
-
 position:fixed;
 bottom:0;
 left:0;
@@ -71,65 +56,46 @@ width:100%;
 background:#111;
 padding:10px;
 display:flex;
-
+box-sizing:border-box;
 }
 
-
 input{
-
 flex:1;
 padding:12px;
 border-radius:20px;
 border:0;
-
 }
 
-
 button{
-
 background:#0066ff;
 color:white;
 border:0;
 padding:10px 20px;
 border-radius:20px;
 margin-right:5px;
-
 }
-
 
 </style>
 
 </head>
 
-
 <body>
 
-
 <header id="title">
-
 💬 المحادثة
-
 </header>
 
-
 <div id="messages"></div>
-
 
 <div class="bottom">
 
 <input id="text" placeholder="اكتب رسالة">
 
-
 <button id="send">
-
 إرسال
-
 </button>
 
-
-</div>
-<script type="module">
-
+</div><script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -143,7 +109,8 @@ addDoc,
 getDocs,
 query,
 where,
-orderBy
+orderBy,
+serverTimestamp
 
 }
 
@@ -206,7 +173,6 @@ document.getElementById("title").innerHTML=
 
 onAuthStateChanged(auth,(user)=>{
 
-
 if(user){
 
 me=user.email;
@@ -215,10 +181,7 @@ loadChat();
 
 }
 
-
 });
-
-
 
 
 
@@ -226,7 +189,6 @@ async function loadChat(){
 
 
 let box=document.getElementById("messages");
-
 
 box.innerHTML="";
 
@@ -263,7 +225,6 @@ if(
 ){
 
 
-
 box.innerHTML += `
 
 <div class="msg ${msg.from==me ? 'me':'other'}">
@@ -274,9 +235,7 @@ ${msg.text}
 
 `;
 
-
 }
-
 
 
 });
@@ -310,7 +269,7 @@ to:target,
 
 text:text,
 
-time:new Date()
+time:serverTimestamp()
 
 }
 
@@ -325,9 +284,6 @@ loadChat();
 
 
 }
-
-
-
 
 
 </script>
