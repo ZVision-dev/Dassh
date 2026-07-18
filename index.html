@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+<head>
+color:inherit;
+} html>
+<html lang="ar" dir="rtl">
 
 <head>
 
@@ -7,90 +11,236 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dash</title>
-<title>Dash</title>
-
-<script async
-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9458785506328025"
-crossorigin="anonymous"></script>
 
 <style>
-<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
 body{
-background:#000;
-color:white;
-font-family:Arial;
-padding-bottom:80px;
+background:linear-gradient(180deg,#050816,#0f172a,#050816);
+color:#fff;
+overflow-x:hidden;
+padding-bottom:100px;
 }
 
 header{
-text-align:center;
+position:sticky;
+top:0;
+z-index:1000;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 20px;
+background:rgba(10,15,25,.75);
+backdrop-filter:blur(18px);
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+header h1{
+font-size:32px;
+font-weight:bold;
+background:linear-gradient(90deg,#4F8CFF,#8B5CF6,#00D4FF);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+header p{
+font-size:13px;
+color:#9ca3af;
+margin-top:5px;
+}
+
+#posts{
 padding:20px;
-background:#111;
+display:flex;
+flex-direction:column;
+gap:22px;
 }
 
 .post{
-width:90%;
-max-width:400px;
-margin:20px auto;
-background:#181818;
-padding:15px;
-border-radius:20px;
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(20px);
+border-radius:24px;
+padding:18px;
+box-shadow:0 10px 35px rgba(0,0,0,.35);
+transition:.35s;
+animation:fade .5s ease;
+}
+
+.post:hover{
+transform:translateY(-5px);
+box-shadow:0 18px 40px rgba(79,140,255,.25);
 }
 
 .post img{
 width:100%;
-border-radius:15px;
+border-radius:18px;
+margin:15px 0;
+transition:.35s;
+}
+
+.post img:hover{
+transform:scale(1.02);
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(25px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}.post-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.user-info{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.avatar{
+width:50px;
+height:50px;
+border-radius:50%;
+background:linear-gradient(135deg,#4F8CFF,#7C3AED);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+color:#fff;
+box-shadow:0 0 20px rgba(79,140,255,.35);
+}
+
+.username{
+color:#fff;
+font-size:17px;
+font-weight:bold;
+text-decoration:none;
+transition:.3s;
+}
+
+.username:hover{
+color:#60A5FA;
+}
+
+.post-time{
+font-size:12px;
+color:#8b8b8b;
+margin-top:3px;
 }
 
 button{
-background:#333;
-color:white;
-border:0;
-padding:10px;
-border-radius:20px;
-margin:5px;
+background:linear-gradient(135deg,#2563eb,#4F8CFF);
+color:#fff;
+border:none;
+padding:10px 16px;
+border-radius:14px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold;
 }
 
-input{
-width:90%;
-padding:10px;
-border-radius:10px;
-border:0;
-}
-
-.comment{
-background:#333;
-padding:10px;
-border-radius:10px;
-margin:5px;
+button:hover{
+transform:scale(1.05);
 }
 
 .follow{
-background:#006600;
+background:linear-gradient(135deg,#16a34a,#22c55e);
 }
 
 .followed{
 background:#555;
 }
 
-
-.nav{
-position:fixed;
-bottom:0;
-left:0;
+input{
 width:100%;
-background:#111;
-text-align:center;
-padding:8px;
+padding:13px;
+margin-top:12px;
+background:#1d2435;
+color:white;
+border:none;
+border-radius:14px;
+outline:none;
 }
 
+.comment{
+margin-top:10px;
+padding:12px;
+border-radius:14px;
+background:#1a2232;
+border-left:3px solid #4F8CFF;
+}.nav{
+position:fixed;
+bottom:12px;
+left:50%;
+transform:translateX(-50%);
+width:95%;
+max-width:500px;
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:12px;
+background:rgba(15,20,30,.82);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+box-shadow:0 15px 40px rgba(0,0,0,.45);
+}
+
+.nav a{
+text-decoration:none;
+}
 
 .nav button{
-font-size:18px;
+background:transparent;
+border:none;
+font-size:24px;
+color:#bfc7d5;
+padding:12px;
+border-radius:16px;
+transition:.3s;
 }
 
+.nav button:hover{
+background:rgba(79,140,255,.15);
+color:#4F8CFF;
+transform:translateY(-3px);
+}
 
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-track{
+background:#0b1120;
+}
+
+::-webkit-scrollbar-thumb{
+background:#4F8CFF;
+border-radius:20px;
+}
+
+::selection{
+background:#4F8CFF;
+color:white;
+}
+
+a{
+color:inherit;
+}
 </style>
 
 </head>
@@ -270,28 +420,34 @@ box.innerHTML += `
 
 <div class="post">
 
+<div class="post-header">
 
-<h3>
+<div class="user-info">
 
+<div class="avatar">
+👤
+</div>
 
-<a href="user.html?user=${post.username}" 
-style="color:white;text-decoration:none;">
+<div>
 
-👤 @${post.username}
-
+<a href="user.html?user=${post.username}" class="username">
+@${post.username}
 </a>
 
+<div class="post-time">
+الآن
+</div>
 
+</div>
+
+</div>
 
 <button class="${followed ? 'followed':'follow'}"
 onclick="follow('${post.username}',this)">
-
-${followed ? '✅ متابَع':'➕ متابعة'}
-
+${followed ? "✓":"+"}
 </button>
 
-
-</h3>
+</div>
 
 
 
